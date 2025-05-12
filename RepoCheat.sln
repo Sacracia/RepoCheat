@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RepoCheat", "RepoCheat\RepoCheat.vcxproj", "{6802BE83-A532-4BC6-92B2-DDE21E829182}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Free|x64 = Free|x64
+		Nexus|x64 = Nexus|x64
+		Premium|x64 = Premium|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6802BE83-A532-4BC6-92B2-DDE21E829182}.Free|x64.ActiveCfg = Free|x64
+		{6802BE83-A532-4BC6-92B2-DDE21E829182}.Free|x64.Build.0 = Free|x64
+		{6802BE83-A532-4BC6-92B2-DDE21E829182}.Nexus|x64.ActiveCfg = Nexus|x64
+		{6802BE83-A532-4BC6-92B2-DDE21E829182}.Nexus|x64.Build.0 = Nexus|x64
+		{6802BE83-A532-4BC6-92B2-DDE21E829182}.Premium|x64.ActiveCfg = Premium|x64
+		{6802BE83-A532-4BC6-92B2-DDE21E829182}.Premium|x64.Build.0 = Premium|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61A0B925-6857-4217-AA78-814202FB1409}
+	EndGlobalSection
+EndGlobal

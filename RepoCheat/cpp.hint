@@ -1,0 +1,8 @@
+// Файлы указаний помогают среде IDE Visual Studio интерпретировать идентификаторы Visual C++
+// (например, имена функций и макросов).
+// Дополнительные сведения: https://go.microsoft.com/fwlink/?linkid=865984
+#define HAX_STATIC_FIELD(c, t, f, a, ns, cn, fn) static t* c ## __ ## f
+#define HAX_FIELD(c, t, f, a, ns, cn, fn) static int c ## __ ## f;
+#define HAX_METHOD(c, r, m, p, a, ns, cn, mn, s) static HaxMethod<r(__fastcall*)p> c ## __ ## m;
+#define FIELD(c, t, f) t& f() { return *(t*)((char*)this + c ## __ ## f); }
+#define STATIC_FIELD(c, t, f) static t& f() { return *c ## __ ## f; }

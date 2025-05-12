@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Free|x64">
+      <Configuration>Free</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Nexus|x64">
+      <Configuration>Nexus</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Premium|x64">
+      <Configuration>Premium</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{6802be83-a532-4bc6-92b2-dde21e829182}</ProjectGuid>
+    <RootNamespace>RepoCheat</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Free|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nexus|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Free|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Nexus|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'">
+    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\build\obj\$(Configuration)\</IntDir>
+    <TargetName>REPO_Cheat_Premium</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Free|x64'">
+    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\build\obj\$(Configuration)\</IntDir>
+    <TargetName>REPO_Cheat_Free</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nexus|x64'">
+    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\build\obj\$(Configuration)\</IntDir>
+    <TargetName>REPO_Cheat_Nexus</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>PREMIUM;REPOCHEAT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\haxsdk;</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Free|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>FREE;REPOCHEAT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\haxsdk;</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nexus|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NEXUS;REPOCHEAT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\haxsdk;</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="cheat\cheat.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="haxsdk\haxsdk.cpp" />
+    <ClCompile Include="haxsdk\haxsdk_gui.cpp" />
+    <ClCompile Include="haxsdk\haxsdk_unity.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_dx10.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_dx11.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_dx12.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_dx9.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_opengl2.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_win32.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\imgui.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\imgui_demo.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\imgui_draw.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\imgui_tables.cpp" />
+    <ClCompile Include="haxsdk\third_party\imgui\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cheat\cheat.h" />
+    <ClInclude Include="cheat\fonts\Hack_Compressed.h" />
+    <ClInclude Include="cheat\fonts\Rubik_Regular.ttf.h" />
+    <ClInclude Include="cheat\game_data.h" />
+    <ClInclude Include="cheat\locales.h" />
+    <ClInclude Include="haxsdk\haxsdk.h" />
+    <ClInclude Include="haxsdk\haxsdk_gui.h" />
+    <ClInclude Include="haxsdk\haxsdk_unity.h" />
+    <ClInclude Include="haxsdk\third_party\detours\x64\detours.h" />
+    <ClInclude Include="haxsdk\third_party\detours\x64\detver.h" />
+    <ClInclude Include="haxsdk\third_party\detours\x64\syelog.h" />
+    <ClInclude Include="haxsdk\third_party\detours\x86\detours.h" />
+    <ClInclude Include="haxsdk\third_party\detours\x86\detver.h" />
+    <ClInclude Include="haxsdk\third_party\detours\x86\syelog.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_dx10.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_dx11.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_dx12.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_dx9.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_opengl2.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_opengl3.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_win32.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\imconfig.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\imgui.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\imgui_internal.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\imstb_rectpack.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\imstb_textedit.h" />
+    <ClInclude Include="haxsdk\third_party\imgui\imstb_truetype.h" />
+    <ClInclude Include="haxsdk\third_party\stb_image.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RepoCheat.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\boosty_link.png" />
+    <Image Include="resources\boosty_watermark.png" />
+    <Image Include="resources\discord_link.png" />
+    <Image Include="resources\patreon_link.png" />
+    <Image Include="resources\patreon_watermark.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
