@@ -94,6 +94,7 @@ namespace Locales {
     const char* KILL[2] = { "Kill",         RUS("Убить") };
     const char* REVIVE[2] = { "Revive",         RUS("Возродить") };
     const char* BECOME_GHOST[2] = { "Become ghost",         RUS("Стать призраком") };
+    const char* OVERCHARGE[2] = { "Overcharge",         RUS("Перегрузить") };
 
     const char* MISC[2] = { "Miscellaneous",         RUS("Разное") };
     const char* IMPROVE_VISION[2] = { "Improve vision",         RUS("Улучшить зрение") };

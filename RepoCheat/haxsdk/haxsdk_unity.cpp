@@ -1,563 +1,713 @@
+/*
+
+[Index of this file]
+|
+|- [SECTION] Definitions from HaxSdk API
+|- [SECTION] Definitions from UnityEngine.CoreModule
+|- [SECTION] Definitions from UnityEngine.PhysicsModule
+|- [SECTION] Definitions from UnityEngine.UI
+|- [SECTION] Definitions from PhotonUnityNetworking
+
+*/
+
 #include "haxsdk_unity.h"
 
-#include <cmath>
+namespace vtables
+{
+    unsafe::VTable* g_Bounds;
+    unsafe::VTable* g_Color;
+    unsafe::VTable* g_Matrix4x4;
+    unsafe::VTable* g_Quaternion;
+    unsafe::VTable* g_Vector3;
+}
 
-namespace Unity {
-    static const char* MODULE = "UnityEngine";
-    static const char* NAMESPACE = "UnityEngine";
+//-----------------------------------------------------------------------------
+// [SECTION] Definitions from HaxSdk API
+//-----------------------------------------------------------------------------
 
-    Class* AsyncOperation::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "AsyncOperation");
-        return pClass;
+void HaxSdk::InitUnity()
+{
+    static bool s_Initialized = false;
+    if (!s_Initialized)
+    {
+        s_Initialized = true;
+
+        HaxSdk::InitSystem();
+
+        vtables::g_Vector3 = unsafe::Image::GetUnityCore()->GetClass("UnityEngine", "Vector3")->GetVTable();
+        vtables::g_Quaternion = unsafe::Image::GetUnityCore()->GetClass("UnityEngine", "Quaternion")->GetVTable();
+        vtables::g_Matrix4x4 = unsafe::Image::GetUnityCore()->GetClass("UnityEngine", "Matrix4x4")->GetVTable();
+        vtables::g_Bounds = unsafe::Image::GetUnityCore()->GetClass("UnityEngine", "Bounds")->GetVTable();
+        vtables::g_Color = unsafe::Image::GetUnityCore()->GetClass("UnityEngine", "Color")->GetVTable();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// [SECTION] Definitions from UnityEngine.CoreModule
+//-----------------------------------------------------------------------------
+
+namespace Unity
+{
+    bool AsyncOperation::GetIsDone()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<AsyncOperation>.GetMethod("get_isDone"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool, AsyncOperation>(*this);
+
+        return method.Address<bool, AsyncOperation>(*this);
     }
 
-    bool AsyncOperation::GetIsDone() {
-        static HaxMethod<bool(*)(AsyncOperation*)> method(AsyncOperation::GetClass()->FindMethod("get_isDone"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(bool*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
+    float AsyncOperation::GetProgress()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<AsyncOperation>.GetMethod("get_progress"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<float, AsyncOperation>(*this);
+
+        return method.Address<float, AsyncOperation>(*this);
     }
 
-    float AsyncOperation::GetProgress() {
-        static HaxMethod<float(*)(AsyncOperation*)> method(AsyncOperation::GetClass()->FindMethod("get_progress"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(float*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
+    bool Behaviour::GetEnabled()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Behaviour>.GetMethod("get_enabled"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool, Behaviour>(*this);
+
+        return method.Address<bool, Behaviour>(*this);
     }
 
-    Class* Behaviour::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Behaviour");
-        return pClass;
+    bool Behaviour::GetIsActiveAndEnabled()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Behaviour>.GetMethod("get_isActiveAndEnabled"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool, Behaviour>(*this);
+
+        return method.Address<bool, Behaviour>(*this);
     }
 
-    bool Behaviour::GetEnabled() {
-        static HaxMethod<bool(*)(Behaviour*)> method(Behaviour::GetClass()->FindMethod("get_enabled"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(bool*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
+    void Behaviour::SetEnabled(bool value)
+    {
+        CHECK_NULL();
 
-    bool Behaviour::GetIsActiveAndEnabled() {
-        static HaxMethod<bool(*)(Behaviour*)> method(Behaviour::GetClass()->FindMethod("get_isActiveAndEnabled"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(bool*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    void Behaviour::SetEnabled(bool value) {
-        static HaxMethod<void(__fastcall*)(Behaviour*,bool)> method(Behaviour::GetClass()->FindMethod("set_enabled"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+        static System::MethodInfo method(typeof<Behaviour>.GetMethod("set_enabled"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Behaviour, bool>(*this, value);
             return;
         }
 
-        method.ptr(this, value);
+        return method.Address<void, Behaviour, bool>(*this, value);
     }
 
-    Class* BoxCollider::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "BoxCollider");
-        return pClass;
+    Bounds_Boxed Bounds::Box() const
+    {
+        return Bounds_Boxed(*this);
     }
 
-    Vector3 BoxCollider::InternalGetCenter() {
-        static HaxMethod<void(*)(BoxCollider*,Vector3*)> method(BoxCollider::GetClass()->FindMethod("INTERNAL_get_center"));
-        Vector3 result;
-        method.ptr(this, &result);
-        return result;
+    Bounds_Boxed::Bounds_Boxed(const Bounds& b) : Object(vtables::g_Bounds), m_Value(b)
+    {
+
     }
 
-    Vector3 BoxCollider::InternalGetSize() {
-        static HaxMethod<void(*)(BoxCollider*,Vector3*)> method(BoxCollider::GetClass()->FindMethod("INTERNAL_get_size"));
-        Vector3 result;
-        method.ptr(this, &result);
-        return result;
+    //
+    // Camera
+    //
+    STATIC Camera Camera::GetMain()
+    {
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_main"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Camera>();
+
+        return method.Address<Camera>();
     }
 
-    void BoxCollider::InternalSetCenter(Vector3 value) {
-        static HaxMethod<void(*)(BoxCollider*,Vector3*)> method(BoxCollider::GetClass()->FindMethod("INTERNAL_set_center"));
-        method.ptr(this, &value);
+    Vector3 Camera::WorldToScreenPoint(const Vector3& worldPos, const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix, float screenWidth, float screenHeight)
+    {
+        Unity::Vector4 worldPos4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+
+        // 2. View * World
+        Unity::Vector4 viewSpace = viewMatrix * worldPos4;
+
+        // 3. Projection * View
+        Unity::Vector4 clipSpace = projectionMatrix * viewSpace;
+
+        if (clipSpace.w < 0.1f)
+            return Unity::Vector3(-9999, -9999, -9999); // объект за камерой
+
+        // 4. Преобразование в нормализованные координаты устройства (NDC)
+        Unity::Vector3 ndc;
+        ndc.x = clipSpace.x / clipSpace.w;
+        ndc.y = clipSpace.y / clipSpace.w;
+        ndc.z = clipSpace.z / clipSpace.w;
+
+        // 5. Преобразование в экранные координаты
+        Unity::Vector3 screenPos;
+        screenPos.x = (ndc.x * 0.5f + 0.5f) * screenWidth;
+        screenPos.y = (1.0f - (ndc.y * 0.5f + 0.5f)) * screenHeight;
+        screenPos.z = ndc.z;
+
+        return screenPos;
     }
 
-    void BoxCollider::InternalSetSize(Vector3 value) {
-        static HaxMethod<void(*)(BoxCollider*,Vector3*)> method(BoxCollider::GetClass()->FindMethod("INTERNAL_set_size"));
-        method.ptr(this, &value);
-    }
+    Vector3 Camera::WorldToScreenPoint(const Vector3& pos)
+    {
+        CHECK_NULL();
 
-    Vector3 BoxCollider::GetCenter() {
-        static HaxMethod<Vector3(*)(BoxCollider*)> method(BoxCollider::GetClass()->FindMethod("get_center"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Vector3*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Vector3 BoxCollider::GetSize() {
-        static HaxMethod<Vector3(*)(BoxCollider*)> method(BoxCollider::GetClass()->FindMethod("get_size"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Vector3*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Class* Camera::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Camera");
-        return pClass;
-    }
-
-    Camera* Camera::GetMain() {
-        static HaxMethod<Camera*(*)()> method(Camera::GetClass()->FindMethod("get_main"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? (Camera*)method.Invoke(nullptr, nullptr) : method.ptr();
-    }
-
-    Vector3 Camera::WorldToScreenPoint(Vector3 position) {
-        static HaxMethod<Vector3(__fastcall*)(Camera*,Vector3)> method(Camera::GetClass()->FindMethod("WorldToScreenPoint", "UnityEngine.Vector3(UnityEngine.Vector3)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &position };
-            return *(Vector3*)method.Invoke(this, args)->Unbox();
-        }
-
-        return method.ptr(this, position);
-    }
-
-    Vector3 Camera::WorldToScreenPoint_Injected(Vector3 position, Camera::MonoOrStereoscopicEye eye) {
-        static HaxMethod<void(__fastcall*)(Camera*, Vector3*,Int32,Vector3*)> method(Camera::GetClass()->FindMethod("WorldToScreenPoint_Injected"));
-        printf("%p\n", method.ptr);
-        Vector3 res;
-        method.ptr(this, &position, eye, &res);
-        return res;
-    }
-
-    Vector3 Camera::INTERNAL_CALL_WorldToScreenPoint(Vector3 position) {
-        static HaxMethod<void(__fastcall*)(Camera*,Vector3*,Vector3*)> method(Camera::GetClass()->FindMethod("INTERNAL_CALL_WorldToScreenPoint"));
-        Vector3 res;
-        method.ptr(this, &position, &res);
-        return res;
-    }
-
-    float Camera::GetOrthographicSize() {
-        static HaxMethod<float(*)(Camera*)> method(Camera::GetClass()->FindMethod("get_orthographicSize"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(float*)method.Invoke(nullptr, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    void Camera::SetOrthographicSize(float value) {
-        static HaxMethod<void(*)(Camera*, float)> method(Camera::GetClass()->FindMethod("set_orthographicSize"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
-            return;
-        }
-
-        method.ptr(this, value);
-    }
-
-    Int32 Camera::GetPixelWidth() {
-        static HaxMethod<Int32(*)(Camera*)> method(Camera::GetClass()->FindMethod("get_pixelWidth"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Int32*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Int32 Camera::GetPixelHeight() {
-        static HaxMethod<Int32(*)(Camera*)> method(Camera::GetClass()->FindMethod("get_pixelHeight"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Int32*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Matrix4x4 Camera::GetProjectionMatrix() {
-        static HaxMethod<Matrix4x4(*)(Camera*)> method(Camera::GetClass()->FindMethod("get_projectionMatrix"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Matrix4x4*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Matrix4x4 Camera::GetWorldToCameraMatrix() {
-        static HaxMethod<Matrix4x4(*)(Camera*)> method(Camera::GetClass()->FindMethod("get_worldToCameraMatrix"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Matrix4x4*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    float Camera::GetFarClipPlane() {
-        static HaxMethod<float(*)(Camera*)> method(Camera::GetClass()->FindMethod("get_farClipPlane"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(float*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    void Camera::SetFarClipPlane(float value) {
-        static HaxMethod<void(*)(Camera*, float)> method(Camera::GetClass()->FindMethod("set_farClipPlane"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
-            return;
-        }
-        method.ptr(this, value);
-    }
-
-    float Camera::GetNearClipPlane() {
-        static HaxMethod<float(*)(Camera*)> method(Camera::GetClass()->FindMethod("get_nearClipPlane"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(float*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    float Camera::GetFieldOfView() {
-        static HaxMethod<float(*)(Camera*)>method(Camera::GetClass()->FindMethod("get_fieldOfView"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(float*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Class* Collider::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Collider");
-        return pClass;
-    }
-
-    bool Collider::GetEnabled() {
-        static HaxMethod<bool(__fastcall*)(Collider*)> method(Collider::GetClass()->FindMethod("get_enabled"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(bool*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    void Collider::SetEnabled(bool value) {
-        static HaxMethod<void(__fastcall*)(Collider*,bool)> method(Collider::GetClass()->FindMethod("set_enabled"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
-            return;
-        }
-
-        method.ptr(this, value);
-    }
-
-    Bounds Collider::GetBounds() {
-        static HaxMethod<Bounds(__fastcall*)(Collider*)> method(Collider::GetClass()->FindMethod("get_bounds"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Unity::Bounds*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Class* Object::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Object");
-        return pClass;
-    }
-
-    Object* Object::Instantiate(Object* original) {
-        static HaxMethod<Object*(*)(Object*)> method(Object::GetClass()->FindMethod("Instantiate", "UnityEngine.Object(UnityEngine.Object)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { original };
-            return (Object*)method.Invoke(nullptr, args);
-        }
-        return method.ptr(original);
-    }
-
-    Object* Object::Instantiate(Object* original, Vector3 position, Quaternion rotation) {
-        static HaxMethod<Object*(*)(Object*,Vector3,Quaternion)> method(Object::GetClass()->FindMethod("Instantiate", "UnityEngine.Object(UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { original, &position, &rotation };
-            return (Object*)method.Invoke(nullptr, args);
-        }
-        return method.ptr(original, position, rotation);
-    }
-
-    System::Array<Object*>* Object::FindObjectsOfType(System::Type* pType) {
-        static HaxMethod<System::Array<Object*>*(*)(System::Type*)> method(Object::GetClass()->FindMethod("FindObjectsOfType", "UnityEngine.Object[](System.Type)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType };
-            return (System::Array<Object*>*)method.Invoke(nullptr, args);
-        }
-        return method.ptr(pType);
-    }
-
-    Object* Object::FindObjectOfType(System::Type* pType) {
-        static HaxMethod<Object*(*)(System::Type*)> method(Object::GetClass()->FindMethod("FindObjectOfType", "UnityEngine.Object(System.Type)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType };
-            return (Object*)method.Invoke(nullptr, args);
-        }
-
-        return method.ptr(pType);
-    }
-
-    void Object::Destroy(Object* pObj, float t) {
-        static HaxMethod<void(*)(Object*,float)> method(Object::GetClass()->FindMethod("Destroy"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pObj, &t};
-            method.Invoke(nullptr, args);
-            return;
-        }
-
-        method.ptr(pObj, t);
-    }
-
-    System::String* Object::GetName() {
-        static HaxMethod<System::String*(*)(Object*)> method(Object::GetClass()->FindMethod("get_name"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? (System::String*)method.Invoke(this, nullptr) : method.ptr(this);
-    }
-
-    void Object::SetName(System::String* pName) {
-        static HaxMethod<void(*)(Object*, System::String*)> method(Object::GetClass()->FindMethod("set_name"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pName };
-            method.Invoke(this, args);
-            return;
-        }
-
-        method.ptr(this, pName);
-    }
-
-    void Object::SetHideFlags(HideFlags flags) {
-        static HaxMethod<void(*)(Object*, HideFlags)> method(Object::GetClass()->FindMethod("set_hideFlags"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &flags };
-            method.Invoke(this, args);
-            return;
-        }
-
-        method.ptr(this, flags);
-    }
-
-    Class* GameObject::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "GameObject");
-        return pClass;
-    }
-
-    GameObject* GameObject::New(const char* name) {
-        GameObject* newGameObject = (GameObject*)System::Object::New(GameObject::GetClass());
-        auto* pName = System::String::New(name);
-
-        static HaxMethod<void(*)(GameObject*, System::String*)> method(GameObject::GetClass()->FindMethod(".ctor", "System.Void(System.String)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[1] = { pName };
-            method.Invoke(newGameObject, args);
-            return newGameObject;
+        static System::MethodInfo method(typeof<Camera>.GetMethod("WorldToScreenPoint", "UnityEngine.Vector3(UnityEngine.Vector3)"));
+        
+        if (HaxSdk::IsMono())
+        {
+            Vector3_Boxed boxed(pos);
+            return method.Thunk<Vector3_Boxed*, Camera, Vector3_Boxed*>(*this, &boxed)->m_Value;
         }
         
-        method.ptr(newGameObject, pName);
-        return newGameObject;
+        return method.Address<Vector3, Camera, Vector3>(*this, pos);
     }
 
-    Transform* GameObject::GetTransform() {
-        static HaxMethod<Transform*(*)(GameObject*)> method(GameObject::GetClass()->FindMethod("get_transform"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? (Transform*)method.Invoke(this, nullptr) : method.ptr(this);
+    float Camera::GetOrthographicSize()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_orthographicSize"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<float, Camera>(*this);
+
+        return method.Address<float, Camera>(*this);
     }
 
-    void GameObject::SetLayer(Int32 value) {
-        static HaxMethod<void(*)(GameObject*,Int32)> method(GameObject::GetClass()->FindMethod("set_layer"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+    void Camera::SetOrthographicSize(float value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("set_orthographicSize"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<void, Camera, float>(*this, value);
+
+        return method.Address<void, Camera, float>(*this, value);
+    }
+
+    int Camera::GetPixelWidth()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_pixelWidth"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<int, Camera>(*this);
+
+        return method.Address<int, Camera>(*this);
+    }
+
+    int Camera::GetPixelHeight()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_pixelHeight"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<int, Camera>(*this);
+
+        return method.Address<int, Camera>(*this);
+    }
+
+    Matrix4x4 Camera::GetProjectionMatrix()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_projectionMatrix"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Matrix4x4_Boxed*, Camera>(*this)->m_Value;
+
+        return method.Address<Matrix4x4, Camera>(*this);
+    }
+
+    void Camera::GetProjectionMatrix_Injected(Matrix4x4* ret)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_projectionMatrix_Injected"));
+        
+        if (HaxSdk::IsMono())
+        {
+            Matrix4x4_Boxed boxed(*ret);
+            method.Thunk<void, Camera, Matrix4x4_Boxed*>(*this, &boxed);
+            *ret = boxed.m_Value;
             return;
         }
 
-        method.ptr(this, value);
+        method.Address<void, Camera, Matrix4x4*>(*this, ret);
     }
 
-    bool GameObject::GetActiveSelf() {
-        static HaxMethod<bool(*)(GameObject*)> method(GameObject::GetClass()->FindMethod("get_activeSelf"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(bool*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
+    Matrix4x4 Camera::GetWorldToCameraMatrix()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_worldToCameraMatrix"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Matrix4x4_Boxed*, Camera>(*this)->m_Value;
+
+        return method.Address<Matrix4x4, Camera>(*this);
     }
 
-    Component* GameObject::GetComponent(System::Type* pType) {
-        static HaxMethod<Component*(*)(GameObject*,System::Type*)> method(GameObject::GetClass()->FindMethod("GetComponent", "UnityEngine.Component(System.Type)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType };
-            return (Component*)method.Invoke(this, args);
-        }
+    void Camera::GetWorldToCameraMatrix_Injected(Matrix4x4* ret)
+    {
+        CHECK_NULL();
 
-        return method.ptr(this, pType);
-    }
-
-    Component* GameObject::AddComponent(System::Type* pType) {
-        static HaxMethod<Component*(*)(GameObject*,System::Type*)> method(GameObject::GetClass()->FindMethod("AddComponent", "UnityEngine.Component(System.Type)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType };
-            return (Component*)method.Invoke(this, args);
-        }
-
-        return method.ptr(this, pType);
-    }
-
-    System::Array<Component*>* GameObject::GetComponentsInChildren(System::Type* pType, bool includeInactive = false) {
-        static HaxMethod<System::Array<Component*>*(*)(GameObject*,System::Type*,bool)> method(GameObject::GetClass()->FindMethod("GetComponentsInChildren", "Component[](System.Type,System.Boolean)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType, &includeInactive };
-            return (System::Array<Component*>*)method.Invoke(this, args);
-        }
-
-        return method.ptr(this, pType, includeInactive);
-    }
-
-    void GameObject::SetActive(bool value) {
-        static HaxMethod<void(*)(GameObject*,bool)> method(GameObject::GetClass()->FindMethod("set_active"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
-            return; 
-        }
-
-        return method.ptr(this, value);
-    }
-
-    bool GameObject::GetActive() {
-        static HaxMethod<bool(*)(GameObject*)> method(GameObject::GetClass()->FindMethod("get_active"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(bool*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    bool GameObject::GetActiveInHierarchy() {
-        static HaxMethod<bool(*)(GameObject*)> method(GameObject::GetClass()->FindMethod("get_activeInHierarchy"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(bool*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
-
-    Transform* Component::GetTransform() {
-        static HaxMethod<Transform*(*)(Component*)> method(Component::GetClass()->FindMethod("get_transform"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? (Transform*)method.Invoke(this, nullptr) : method.ptr(this);
-    }
-
-    Class* Component::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Component");
-        return pClass;
-    }
-
-    GameObject* Component::GetGameObject() {
-        static HaxMethod<GameObject*(*)(Component*)> method(Component::GetClass()->FindMethod("get_gameObject"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? (GameObject*)method.Invoke(this, nullptr) : method.ptr(this);
-    }
-
-    Component* Component::GetComponentInChildren(System::Type* pType) {
-        static HaxMethod<Component*(*)(Component*,System::Type*)> method(Component::GetClass()->FindMethod("GetComponentInChildren", "UnityEngine.Component(System.Type)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType };
-            return (Component*)method.Invoke(this, args);
-        }
-
-        return method.ptr(this, pType);
-    }
-
-    System::Array<Component*>* Component::GetComponentsInChildren(System::Type* pType) {
-        static HaxMethod<System::Array<Component*>*(*)(Component*,System::Type*)> method(Component::GetClass()->FindMethod("GetComponentsInChildren", "UnityEngine.Component[](System.Type)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType };
-            return (System::Array<Component*>*)method.Invoke(this, args);
-        }
-
-        return method.ptr(this, pType);
-    }
-
-    Component* Component::GetComponent(System::Type* pType) {
-        static HaxMethod<Component*(*)(Component*,System::Type*)> method(this->GetClass()->FindMethod("GetComponent", "UnityEngine.Component(System.Type)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pType };
-            return (Component*)method.Invoke(this, args);
-        }
-
-        return method.ptr(this, pType);
-    }
-
-    Class* Shader::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Shader");
-        return pClass;
-    }
-
-    Shader* Shader::Find(System::String* pName) {
-        static HaxMethod<Shader*(*)(System::String*)> method(Shader::GetClass()->FindMethod("Find", nullptr));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pName };
-            return (Shader*)method.Invoke(nullptr, args);
-        }
-
-        return method.ptr(pName);
-    }
-
-    Class* Material::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Material");
-        return pClass;
-    }
-
-    Material* Material::New(Shader* pShader) {
-        Material* pMaterial = (Material*)System::Object::New(Material::GetClass());
-        static HaxMethod<void(*)(Material*, Shader*)> method(Material::GetClass()->FindMethod(".ctor", "System.Void(UnityEngine.Shader)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[1] = { pShader };
-            method.Invoke(pMaterial, args);
-            return pMaterial;
-        }
-
-        method.ptr(pMaterial, pShader);
-        return pMaterial;
-    }
-
-    void Material::SetInt(System::String* pName, Int32 value) {
-        static HaxMethod<void(*)(Material*,System::String*,Int32)> method(Material::GetClass()->FindMethod("SetInt", "System.Void(System.String,System.Int32)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pName, &value };
-            method.Invoke(this, args);
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_worldToCameraMatrix_Injected"));
+        
+        if (HaxSdk::IsMono())
+        {
+            Matrix4x4_Boxed boxed(*ret);
+            method.Thunk<void, Camera, Matrix4x4_Boxed*>(*this, &boxed);
+            *ret = boxed.m_Value;
             return;
         }
 
-        return method.ptr(this, pName, value);
+        method.Address<void, Camera, Matrix4x4*>(*this, ret);
     }
 
-    void Material::SetColor(Unity::Color color) {
-        static HaxMethod<void(*)(Material*, Unity::Color)> method(Material::GetClass()->FindMethod("set_color", nullptr));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &color };
-            method.Invoke(this, args);
+    float Camera::GetFarClipPlane()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_farClipPlane"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<float, Camera>(*this);
+
+        return method.Address<float, Camera>(*this);
+    }
+
+    void Camera::SetFarClipPlane(float value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_farClipPlane"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Camera, float>(*this, value);
             return;
         }
 
-        return method.ptr(this, color);
+         method.Address<void, Camera, float>(*this, value);
     }
 
-    System::Type* KeyCode::GetSystemType() {
-        static System::Type* pType = Class::Find(MODULE, NAMESPACE, "KeyCode")->GetSystemType();
-        return pType;
+    float Camera::GetNearClipPlane()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_nearClipPlane"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<float, Camera>(*this);
+
+        return method.Address<float, Camera>(*this);
     }
 
-    Class* Screen::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Screen");
-        return pClass;
+    float Camera::GetFieldOfView()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Camera>.GetMethod("get_fieldOfView"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<float, Camera>(*this);
+
+        return method.Address<float, Camera>(*this);
     }
 
-    Int32 Screen::GetHeight() {
-        static HaxMethod<Int32(*)()> method(Screen::GetClass()->FindMethod("get_height", nullptr));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Int32*)method.Invoke(nullptr, nullptr)->Unbox() : method.ptr();
+    //
+    // Color
+    //
+    Color_Boxed::Color_Boxed(const Color& c) : Object(vtables::g_Color), m_Value(c)
+    {
+
     }
 
-    Int32 Screen::GetWidth() {
-        static HaxMethod<Int32(*)()> method(Screen::GetClass()->FindMethod("get_width", nullptr));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Int32*)method.Invoke(nullptr, nullptr)->Unbox() : method.ptr();
+    //
+    // Component
+    //
+    Transform Component::GetTransform()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Component>.GetMethod("get_transform"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Transform, Component>(*this);
+
+        return method.Address<Transform, Component>(*this);
     }
 
-    Class* Transform::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Transform");
-        return pClass;
+    GameObject Component::GetGameObject()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Component>.GetMethod("get_gameObject");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<GameObject, Component>(*this);
+
+        return method.Address<GameObject, Component>(*this);
     }
 
-    Vector3 Transform::GetPosition() {
-        static HaxMethod<Vector3(*)(Transform*)> method(Transform::GetClass()->FindMethod("get_position"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Vector3*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
+    Component Component::GetComponentInChildren(System::Type type)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Component>.GetMethod("GetComponentInChildren", "UnityEngine.Component(System.Type)");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Component, Component, System::Type>(*this, type);
+
+        return method.Address<Component, Component, System::Type>(*this, type);
     }
 
-    void Transform::SetPosition(Vector3 value) {
-        static HaxMethod<void(*)(Transform*,Vector3)> method(Transform::GetClass()->FindMethod("set_position"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+    System::Array<Component> Component::GetComponentsInChildren(System::Type type)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Component>.GetMethod("GetComponentsInChildren", "UnityEngine.Component[](System.Type)");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<System::Array<Component>, Component, System::Type>(*this, type);
+
+        return method.Address<System::Array<Component>, Component, System::Type>(*this, type);
+    }
+
+    Component Component::GetComponent(System::Type type)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Component>.GetMethod("GetComponent", "UnityEngine.Component(System.Type)");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Component, Component, System::Type>(*this, type);
+
+        return method.Address<Component, Component, System::Type>(*this, type);
+    }
+
+    //
+    // GameObject
+    //
+    STATIC GameObject GameObject::New()
+    {
+        return GameObject(unsafe::Object::New(typeof<GameObject>.GetPointer()->GetType()->GetClass())->Ctor());
+    }
+
+    STATIC GameObject GameObject::New(const char* name)
+    {
+        static System::MethodInfo method(typeof<GameObject>.GetMethod(".ctor", "System.Void(System.String)"));
+        unsafe::Object* obj = unsafe::Object::New(typeof<GameObject>.GetPointer()->GetType()->GetClass());
+
+        if (HaxSdk::IsMono())
+            method.Thunk<void, unsafe::Object*>(obj);
+        else
+            method.Address<void, unsafe::Object*>(obj);
+
+        return GameObject(obj);
+    }
+
+    Transform GameObject::GetTransform()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("get_transform"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Transform, GameObject>(*this);
+
+        return method.Address<Transform, GameObject>(*this);
+    }
+
+    void GameObject::SetLayer(int value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("set_layer"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, GameObject, int>(*this, value);
             return;
         }
 
-        method.ptr(this, value);
+        method.Address<void, GameObject, int>(*this, value);
     }
 
-    Transform* Transform::GetParent() {
-        static HaxMethod<Transform*(*)(Transform*)> method(Transform::GetClass()->FindMethod("get_parent"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? (Transform*)method.Invoke(this, nullptr) : method.ptr(this);
+    bool GameObject::GetActiveSelf()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("get_activeSelf"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool, GameObject>(*this);
+
+        return method.Address<bool, GameObject>(*this);
     }
 
-    void Transform::SetParent(Transform* value) {
-        static HaxMethod<void(*)(Transform*,Transform*)> method(Transform::GetClass()->FindMethod("set_parent"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { value };
-            method.Invoke(this, args);
+    Component GameObject::GetComponent(System::Type type)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("GetComponent", "UnityEngine.Component(System.Type)"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Component, GameObject, System::Type>(*this, type);
+
+        return method.Address<Component, GameObject, System::Type>(*this, type);
+    }
+
+    Component GameObject::AddComponent(System::Type componentType)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("AddComponent", "UnityEngine.Component(System.Type)"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Component, GameObject, System::Type>(*this, componentType);
+
+        return method.Address<Component, GameObject, System::Type>(*this, componentType);
+    }
+
+    System::Array<Component> GameObject::GetComponentsInChildren(System::Type type, bool includeInactive)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("GetComponentsInChildren", "Component[](System.Type,System.Boolean)"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<System::Array<Component>, GameObject, System::Type, bool>(*this, type, includeInactive);
+
+        return method.Address<System::Array<Component>, GameObject, System::Type, bool>(*this, type, includeInactive);
+    }
+
+    void GameObject::SetActive(bool value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("set_active"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, GameObject, bool>(*this, value);
             return;
         }
 
-        method.ptr(this, value);
+        method.Address<void, GameObject, bool>(*this, value);
     }
 
-    Vector3 Transform::GetForward() {
-        static HaxMethod<Vector3(*)(Transform*)> method(Transform::GetClass()->FindMethod("get_forward"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Vector3*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
+    bool GameObject::GetActive()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("get_active"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool, GameObject>(*this);
+
+        return method.Address<bool, GameObject>(*this);
     }
 
-    float Unity::Vector3::Distance(const Unity::Vector3& a, const Unity::Vector3& b) {
-        Vector3 vector = { a.x - b.x, a.y - b.y, a.z - b.z };
-        return std::sqrt(vector.x * vector.x + vector.y + vector.y + vector.z + vector.z);
+    bool GameObject::GetActiveInHierarchy()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<GameObject>.GetMethod("get_activeInHierarchy"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool, GameObject>(*this);
+
+        return method.Address<bool, GameObject>(*this);
     }
 
-    float Unity::Vector3::Distance(Unity::Vector3& other) {
-        Vector3 vector = { this->x - other.x, this->y - other.y, this->z - other.z };
-        return std::sqrt(vector.x * vector.x + vector.y + vector.y + vector.z + vector.z);
+    //
+    // Light
+    //
+    void Light::SetIntensity(float value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Light>.GetMethod("set_intensity"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Light, float>(*this, value);
+            return;
+        }
+
+        return method.Address<void, Light, float>(*this, value);
     }
 
-    float Unity::Vector3::Distance(Unity::Vector3&& other) {
-        Vector3 vector = { this->x - other.x, this->y - other.y, this->z - other.z };
-        return std::sqrt(vector.x * vector.x + vector.y + vector.y + vector.z + vector.z);
+    float Light::GetIntensity()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Light>.GetMethod("get_intensity"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<float, Light>(*this);
+
+        return method.Address<float, Light>(*this);
     }
 
-    Unity::Vector4 Unity::Matrix4x4::operator*(const Unity::Vector4& v) {
+    void Light::SetRange(float value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Light>.GetMethod("set_range"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Light, float>(*this, value);
+            return;
+        }
+
+        return method.Address<void, Light, float>(*this, value);
+    }
+
+    float Light::GetRange()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Light>.GetMethod("get_range"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<float, Light>(*this);
+
+        return method.Address<float, Light>(*this);
+    }
+
+    //
+    // LineRenderer
+    //
+    void LineRenderer::SetStartWidth(float value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<LineRenderer>.GetMethod("set_startWidth"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<void, LineRenderer, float>(*this, value);
+        else
+            return method.Address<void, LineRenderer, float>(*this, value);
+    }
+
+    void LineRenderer::SetEndWidth(float value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<LineRenderer>.GetMethod("set_endWidth"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<void, LineRenderer, float>(*this, value);
+        else
+            return method.Address<void, LineRenderer, float>(*this, value);
+    }
+
+    void LineRenderer::SetPositionCount(int value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<LineRenderer>.GetMethod("set_positionCount"));
+        
+        if (HaxSdk::IsMono())
+            method.Thunk<void, LineRenderer, int>(*this, value);
+        else
+            method.Address<void, LineRenderer, int>(*this, value);
+    }
+
+    void LineRenderer::SetPosition(int index, const Vector3& position)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<LineRenderer>.GetMethod("SetPosition"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, LineRenderer, int, const Vector3_Boxed&>(*this, index, position.Box());
+            return;
+        }
+
+        method.Address<void, LineRenderer, int, Vector3>(*this, index, position);
+    }
+
+    //
+    // Material
+    //
+    STATIC Material Material::New(Shader shader)
+    {
+        static System::MethodInfo method(typeof<Material>.GetMethod(".ctor", "System.Void(UnityEngine.Shader)"));
+        Material mat = Material(unsafe::Object::New(typeof<Material>.GetPointer()->GetType()->GetClass()));
+
+        if (HaxSdk::IsMono())
+            method.Thunk<void, Material, Shader>(mat, shader);
+        else
+            method.Address<void, Material, Shader>(mat, shader);
+
+        return mat;
+    }
+
+    void Material::SetInt(System::String name, int value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Material>.GetMethod("SetInt", "System.Void(System.String,System.Int32)");
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Material, System::String, int>(*this, name, value);
+            return;
+        }
+
+        method.Address<void, Material, System::String, int>(*this, name, value);
+    }
+
+    void Material::SetColor(Color color)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Material>.GetMethod("set_color");
+        
+        if (HaxSdk::IsMono())
+        {
+            Color_Boxed boxed(color);
+            method.Thunk<void, Material, Color_Boxed*>(*this, &boxed);
+            return;
+        }
+
+        method.Address<void, Material, Color>(*this, color);
+    }
+
+    //
+    // Matrix4x4
+    //
+    Matrix4x4_Boxed::Matrix4x4_Boxed(const Matrix4x4& m) : Object(vtables::g_Matrix4x4), m_Value(m)
+    {
+
+    }
+
+    Vector4 Matrix4x4::operator*(const Unity::Vector4& v) const
+    {
         Unity::Vector4 result = { 0 };
         result.x = m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w;
         result.y = m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w;
@@ -566,7 +716,8 @@ namespace Unity {
         return result;
     }
 
-    Unity::Vector3 Unity::Matrix4x4::MultiplyPoint(Unity::Vector3& point) {
+    Unity::Vector3 Unity::Matrix4x4::MultiplyPoint(Unity::Vector3& point)
+    {
         Vector3 result;
         result.x = m00 * point.x + m01 * point.y + m02 * point.z + m03;
         result.y = m10 * point.x + m11 * point.y + m12 * point.z + m13;
@@ -579,185 +730,489 @@ namespace Unity {
         return result;
     }
 
-    Class* Light::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Light");
-        return pClass;
+    //
+    // Object
+    //
+    Object Object::Instantiate(Object original)
+    {
+        static System::MethodInfo method = typeof<Object>.GetMethod("Instantiate", "UnityEngine.Object(UnityEngine.Object)");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Object, Object>(original);
+
+        return method.Address<Object, Object>(original);
     }
 
-    void Light::SetIntensity(float value) {
-        static HaxMethod<void(*)(Light*,float)> method(Light::GetClass()->FindMethod("set_intensity"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+    Object Object::Instantiate(Object original, const Vector3& position, const Quaternion& rotation)
+    {
+        static System::MethodInfo method = typeof<Object>.GetMethod("Instantiate", "UnityEngine.Object(UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Object, Object, Vector3_Boxed, Quaternion_Boxed>(original, Vector3_Boxed(position), Quaternion_Boxed(rotation));
+
+        return method.Address<Object, Object, Vector3, Quaternion>(original, position, rotation);
+    }
+
+    System::Array<Object> Object::FindObjectsOfType(System::Type type)
+    {
+        static System::MethodInfo method = typeof<Object>.GetMethod("FindObjectsOfType", "UnityEngine.Object[](System.Type)");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<System::Array<Object>, System::Type>(type);
+
+        return method.Address<System::Array<Object>, System::Type>(type);
+    }
+
+    Object Object::FindObjectOfType(System::Type type)
+    {
+        static System::MethodInfo method = typeof<Object>.GetMethod("FindObjectOfType", "UnityEngine.Object(System.Type)");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Object, System::Type>(type);
+
+        return method.Address<Object, System::Type>(type);
+    }
+
+    void Object::Destroy(Object obj, float t)
+    {
+        static System::MethodInfo method = typeof<Object>.GetMethod("Destroy");
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Object, float>(obj, t);
             return;
         }
 
-        method.ptr(this, value);
+        method.Address<void, Object, float>(obj, t);
     }
 
-    float Light::GetIntensity() {
-        static HaxMethod<float(*)(Light*)> method(Light::GetClass()->FindMethod("get_intensity"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(float*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
+    System::String Object::GetName()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Object>.GetMethod("get_name");
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<System::String, Object>(*this);
+
+        return method.Address<System::String, Object>(*this);
     }
 
-    void Light::SetRange(float value) {
-        static HaxMethod<void(*)(Light*, float)> method(Light::GetClass()->FindMethod("set_range"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+    void Object::SetName(System::String name)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method = typeof<Object>.GetMethod("set_name");
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Object, System::String>(*this, name);
             return;
         }
 
-        method.ptr(this, value);
+        method.Address<void, Object, System::String>(*this, name);
     }
 
-    float Light::GetRange() {
-        static HaxMethod<float(*)(Light*)> method(Light::GetClass()->FindMethod("get_range"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(float*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
-    }
+    void Object::SetHideFlags(HideFlags flags)
+    {
+        CHECK_NULL();
 
-    Class* LineRenderer::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "LineRenderer");
-        return pClass;
-    }
-
-    void LineRenderer::SetStartWidth(float value) {
-        static HaxMethod<void(*)(LineRenderer*, float)> method(LineRenderer::GetClass()->FindMethod("set_startWidth"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+        static System::MethodInfo method = typeof<Object>.GetMethod("set_hideFlags");
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Object, HideFlags>(*this, flags);
             return;
         }
 
-        method.ptr(this, value);
+        method.Address<void, Object, HideFlags>(*this, flags);
     }
 
-    void LineRenderer::SetEndWidth(float value) {
-        static HaxMethod<void(*)(LineRenderer*, float)> method(LineRenderer::GetClass()->FindMethod("set_endWidth"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+    //
+    // Quaternion
+    //
+    Quaternion_Boxed::Quaternion_Boxed(float x, float y, float z, float w) : Object(vtables::g_Quaternion), m_Value(x, y, z, w)
+    {
+
+    }
+
+    Quaternion_Boxed::Quaternion_Boxed(const Quaternion& v) : Object(vtables::g_Quaternion), m_Value(v)
+    {
+
+    }
+
+    //
+    // Renderer
+    //
+    Bounds Renderer::GetBounds()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Renderer>.GetMethod("get_bounds"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Bounds_Boxed*, Renderer>(*this)->m_Value;
+
+        return method.Address<Bounds, Renderer>(*this);
+    }
+
+    Material Renderer::GetSharedMaterial()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Renderer>.GetMethod("get_sharedMaterial"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Material, Renderer>(*this);
+
+        return method.Address<Material, Renderer>(*this);
+    }
+
+    void Renderer::SetSharedMaterial(Material material)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Renderer>.GetMethod("set_sharedMaterial"));
+        
+        if (HaxSdk::IsMono())
+            method.Thunk<void, Renderer, Material>(*this, material);
+        else
+            method.Address<void, Renderer, Material>(*this, material);
+    }
+
+    void Renderer::SetMaterial(Material material)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Renderer>.GetMethod("set_material"));
+        
+        if (HaxSdk::IsMono())
+            method.Thunk<void, Renderer, Material>(*this, material);
+        else
+            method.Address<void, Renderer, Material>(*this, material);
+    }
+
+    void Renderer::SetEnabled(bool value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Renderer>.GetMethod("set_enabled"));
+        
+        if (HaxSdk::IsMono())
+            method.Thunk<void, Renderer, bool>(*this, value);
+        else
+            method.Address<void, Renderer, bool>(*this, value);
+    }
+
+    void Renderer::SetSortingOrder(int value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Renderer>.GetMethod("set_sortingOrder"));
+        
+        if (HaxSdk::IsMono())
+            method.Thunk<void, Renderer, int>(*this, value);
+        else
+            method.Address<void, Renderer, int>(*this, value);
+    }
+
+    //
+    // RenderSettings
+    //
+    bool RenderSettings::GetFog()
+    {
+        static System::MethodInfo method(typeof<RenderSettings>.GetMethod("get_fog"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool>();
+
+        return method.Address<bool>();
+    }
+
+    void RenderSettings::SetFog(bool value)
+    {
+        static System::MethodInfo method(typeof<RenderSettings>.GetMethod("set_fog"));
+        
+        if (HaxSdk::IsMono())
+            method.Thunk<void, bool>(value);
+        else
+            method.Address<void, bool>(value);
+    }
+
+    //
+    // Screen
+    //
+    int Screen::GetHeight()
+    {
+        static System::MethodInfo method(typeof<Screen>.GetMethod("get_height"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<int>();
+
+        return method.Address<int>();
+    }
+
+    int Screen::GetWidth()
+    {
+        static System::MethodInfo method(typeof<Screen>.GetMethod("get_width"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<int>();
+
+        return method.Address<int>();
+    }
+
+    //
+    // Shader
+    //
+    STATIC Shader Shader::Find(System::String name)
+    {
+        static System::MethodInfo method(typeof<Shader>.GetMethod("Find"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Shader, System::String>(name);
+
+        return method.Address<Shader, System::String>(name);
+    }
+
+    //
+    // Transform
+    //
+    Vector3 Transform::GetPosition()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Transform>.GetMethod("get_position"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Vector3_Boxed*, Transform>(*this)->m_Value;
+
+        return method.Address<Vector3, Transform>(*this);
+    }
+
+    void Transform::SetPosition(const Unity::Vector3& value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Transform>.GetMethod("set_position"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Transform, Vector3_Boxed>(*this, Vector3_Boxed(value));
             return;
         }
 
-        method.ptr(this, value);
+        return method.Address<void, Transform, Vector3>(*this, value);
     }
 
-    void LineRenderer::SetPositionCount(Int32 value) {
-        static HaxMethod<void(*)(LineRenderer*, Int32)> method(LineRenderer::GetClass()->FindMethod("set_positionCount"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
+    Transform Transform::GetParent()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Transform>.GetMethod("get_parent"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Transform, Transform>(*this);
+
+        return method.Address<Transform, Transform>(*this);
+    }
+
+    void Transform::SetParent(const Unity::Transform& value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Transform>.GetMethod("set_parent"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<Transform, Transform>(*this);
             return;
         }
 
-        method.ptr(this, value);
+        method.Address<Transform, Transform>(*this);
     }
 
-    void LineRenderer::SetPosition(Int32 index, Unity::Vector3 position) {
-        static HaxMethod<void(*)(LineRenderer*, Int32, Unity::Vector3)> method(LineRenderer::GetClass()->FindMethod("SetPosition", "System.Void(System.Int32,UnityEngine.Vector3)"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &index, &position };
-            method.Invoke(this, args);
-            return;
-        }
+    Vector3 Transform::GetForward()
+    {
+        CHECK_NULL();
 
-        method.ptr(this, index, position);
+        static System::MethodInfo method(typeof<Transform>.GetMethod("get_forward"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Vector3_Boxed*, Transform>(*this)->m_Value;
+
+        return method.Address<Vector3, Transform>(*this);
     }
 
-    Class* Renderer::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "Renderer");
-        return pClass;
+    //
+    // Vector3
+    //
+    STATIC float Vector3::Distance(const Unity::Vector3& a, const Unity::Vector3& b)
+    {
+        Vector3 vector(a.x - b.x, a.y - b.y, a.z - b.z);
+        return std::sqrt(vector.x * vector.x + vector.y + vector.y + vector.z + vector.z);
     }
 
-    Bounds Renderer::GetBounds() {
-        static HaxMethod<Bounds(*)(Renderer*)> method(Renderer::GetClass()->FindMethod("get_bounds"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? *(Bounds*)method.Invoke(this, nullptr)->Unbox() : method.ptr(this);
+    float Vector3::Distance(const Unity::Vector3& other)
+    {
+        Vector3 vector(x - other.x, y - other.y, z - other.z);
+        return std::sqrt(vector.x * vector.x + vector.y + vector.y + vector.z + vector.z);
     }
 
-    Material* Renderer::GetSharedMaterial() {
-        static HaxMethod<Material*(*)(Renderer*)> method(Renderer::GetClass()->FindMethod("get_sharedMaterial"));
-        return HaxSdk::GetGlobals().backend & HaxBackend_Mono ? (Material*)method.Invoke(this, nullptr) : method.ptr(this);
+    Vector3 Vector3::Min(const Vector3& a, const Vector3& b)
+    {
+        return Vector3((std::min)(a.x, b.x), (std::min)(a.y, b.y), (std::min)(a.z, b.z));
     }
 
-    /*void Renderer::SetSharedMaterial(Material* pMaterial) {
-        static HaxMethod<void(*)(Renderer*, Material*)> method(Renderer::GetClass()->FindMethod("set_sharedMaterial"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pMaterial };
-            method.Invoke(this, args);
-            return;
-        }
-        method.ptr(this, pMaterial);
-    }*/
-
-    void Renderer::SetMaterial(Material* pMaterial) {
-        static HaxMethod<void(*)(Renderer*, Material*)> method(Renderer::GetClass()->FindMethod("set_material"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pMaterial };
-            method.Invoke(this, args);
-            return;
-        }
-        method.ptr(this, pMaterial);
+    Vector3 Vector3::Max(const Vector3& a, const Vector3& b)
+    {
+        return Vector3((std::max)(a.x, b.x), (std::max)(a.y, b.y), (std::max)(a.z, b.z));
     }
 
-    void Renderer::SetEnabled(bool value) {
-        static HaxMethod<void(*)(Renderer*, bool)> method(Renderer::GetClass()->FindMethod("set_enabled"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
-            return;
-        }
-        method.ptr(this, value);
+    Vector3_Boxed Vector3::Box() const
+    {
+        return Vector3_Boxed(*this);
     }
 
-    void Renderer::SetSortingOrder(Int32 value) {
-        static HaxMethod<void(*)(Renderer*, Int32)> method(Renderer::GetClass()->FindMethod("set_sortingOrder"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { &value };
-            method.Invoke(this, args);
-            return;
-        }
+    Vector3_Boxed::Vector3_Boxed(float _x, float _y, float _z) : Object(vtables::g_Vector3), m_Value(Vector3(_x, _y, _z))
+    {
 
-        method.ptr(this, value);
     }
 
-    Class* MeshRenderer::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "MeshRenderer");
-        return pClass;
+    Vector3_Boxed::Vector3_Boxed(const Vector3& v) : Object(vtables::g_Vector3), m_Value(v)
+    {
+
     }
 
-    bool IsNotNull(Component* pComponent) {
-        static HaxMethod<bool (*)(Component*)> method(Unity::Object::GetClass()->FindMethod("op_Implicit"));
-
-        if (!pComponent)
-            return false;
-
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pComponent };
-            return *(bool*)method.Invoke(nullptr, args)->Unbox();
-        }
-
-        return method.ptr(pComponent);
+    Quaternion_Boxed Quaternion::Box() const
+    {
+        return Quaternion_Boxed(*this);
     }
 }
 
-namespace Photon {
-    using namespace Unity;
+//-----------------------------------------------------------------------------
+// [SECTION] Definitions from UnityEngine.PhysicsModule
+//-----------------------------------------------------------------------------
 
-    const char* MODULE = "PhotonUnityNetworking";
-    const char* NAMESPACE = "Photon.Pun";
+namespace Unity
+{
+    bool Collider::GetEnabled()
+    {
+        CHECK_NULL();
 
-    ::Class* PhotonNetwork::GetClass() {
-        static Class* pClass = Class::Find(MODULE, NAMESPACE, "PhotonNetwork");
-        return pClass;
+        static System::MethodInfo method(typeof<Collider>.GetMethod("get_enabled"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<bool, Collider>(*this);
+
+        return method.Address<bool, Collider>(*this);
     }
 
-    GameObject* PhotonNetwork::InstantiateRoomObject(System::String* pName, Vector3 position, Quaternion rotation, Byte group, void* pData) {
-        static HaxMethod<Unity::GameObject*(*)(System::String*, Vector3, Quaternion, Byte, void*)> method(PhotonNetwork::GetClass()->FindMethod("InstantiateRoomObject"));
-        if (HaxSdk::GetGlobals().backend & HaxBackend_Mono) {
-            void* args[] = { pName, &position, &rotation, &group, pData };
-            return (GameObject*)method.Invoke(nullptr, args);
+    void Collider::SetEnabled(bool value)
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Collider>.GetMethod("set_enabled"));
+        
+        if (HaxSdk::IsMono())
+        {
+            method.Thunk<void, Collider, bool>(*this, value);
+            return;
         }
-        return method.ptr(pName, position, rotation, group, pData);
+
+        method.Address<void, Collider, bool>(*this, value);
+    }
+
+    Bounds Collider::GetBounds()
+    {
+        CHECK_NULL();
+
+        static System::MethodInfo method(typeof<Collider>.GetMethod("get_bounds"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Bounds_Boxed*, Collider>(*this)->m_Value;
+
+        return method.Address<Bounds, Collider>(*this);
+    }
+
+    Vector3 BoxCollider::GetCenter()
+    {
+        static System::MethodInfo method(typeof<BoxCollider>.GetMethod("get_center"));
+        if (HaxSdk::IsMono())
+
+            return method.Thunk<Vector3_Boxed*, BoxCollider>(*this)->m_Value;
+
+        return method.Address<Vector3, BoxCollider>(*this);
+    }
+
+    Vector3 BoxCollider::GetSize()
+    {
+        static System::MethodInfo method(typeof<BoxCollider>.GetMethod("get_size"));
+        
+        if (HaxSdk::IsMono())
+            return method.Thunk<Vector3_Boxed*, BoxCollider>(*this)->m_Value;
+
+        return method.Address<Vector3, BoxCollider>(*this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// [SECTION] Definitions from UnityEngine.UI
+//-----------------------------------------------------------------------------
+
+namespace Unity
+{
+    //
+    // EventSystem
+    //
+    EventSystem EventSystem::GetCurrent()
+    {
+        static System::MethodInfo method(typeof<EventSystem>.GetMethod("get_current"));
+        if (HaxSdk::IsMono())
+            return method.Thunk<EventSystem>();
+
+        return method.Address<EventSystem>();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// [SECTION] PhotonUnityNetworking
+//-----------------------------------------------------------------------------
+
+namespace Photon
+{
+    Player PhotonView::GetOwner()
+    {
+        CHECK_NULL();
+        static System::MethodInfo method = System::AppDomain::GetCurrent().Load("PhotonUnityNetworking").GetType("Photon.Pun", "PhotonView").GetMethod("get_Owner");
+        if (HaxSdk::IsMono())
+            return method.Thunk<Player, PhotonView>(*this);
+        return method.Address<Player, PhotonView>(*this);
+    }
+
+    Unity::GameObject PhotonNetwork::InstantiateRoomObject(System::String name, const Unity::Vector3& position, const Unity::Quaternion& rotation, char8_t group, void* data)
+    {
+        static System::MethodInfo method = System::AppDomain::GetCurrent().Load("PhotonUnityNetworking").GetType("Photon.Pun", "PhotonNetwork").GetMethod("InstantiateRoomObject");
+        if (HaxSdk::IsMono())
+            return method.Thunk<Unity::GameObject, 
+                                System::String, 
+                                const Unity::Vector3_Boxed&, 
+                                const Unity::Quaternion_Boxed&, 
+                                char8_t, 
+                                void*>(name, position.Box(), rotation.Box(), group, data);
+        return method.Address<Unity::GameObject, 
+                            System::String, 
+                            Unity::Vector3, 
+                            Unity::Quaternion, 
+                            char8_t, 
+                            void*>(name, position, rotation, group, data); 
+    }
+
+    Player PhotonNetwork::GetMasterClient()
+    {
+        static System::MethodInfo method = System::AppDomain::GetCurrent().Load("PhotonUnityNetworking").GetType("Photon.Pun", "PhotonNetwork").GetMethod("get_MasterClient");
+        if (HaxSdk::IsMono())
+            return method.Thunk<Player>();
+        return method.Address<Player>();
     }
 }

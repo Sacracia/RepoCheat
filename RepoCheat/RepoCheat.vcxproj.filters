@@ -18,7 +18,13 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cheat\cheat.cpp">
+    <ClCompile Include="haxsdk\backend\il2cpp\haxsdk_il2cpp.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="haxsdk\backend\mono\haxsdk_mono.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="haxsdk\backend\haxsdk_backend.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_dx9.cpp">
@@ -39,6 +45,9 @@
     <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_opengl3.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_vulkan.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
     <ClCompile Include="haxsdk\third_party\imgui\backend\imgui_impl_win32.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -57,27 +66,78 @@
     <ClCompile Include="haxsdk\third_party\imgui\imgui_widgets.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="haxsdk\haxsdk.cpp">
+    <ClCompile Include="haxsdk\haxsdk_assertion.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="haxsdk\haxsdk_gui.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="haxsdk\haxsdk_logger.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="haxsdk\haxsdk_steam_api.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="haxsdk\haxsdk_system.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="haxsdk\haxsdk_tools.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
     <ClCompile Include="haxsdk\haxsdk_unity.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="cheat\cheat.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cheat\fonts\Hack_Compressed.h">
+    <ClInclude Include="haxsdk\backend\il2cpp\haxsdk_il2cpp.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\cheat.h">
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-5.5.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\game_data.h">
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-5.6.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\locales.h">
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2017.1.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2017.2.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2017.3.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2017.4.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2018.1.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2018.2.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2018.3.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2018.4.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2022.1-mbe.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2022.2-mbe.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\headers\unity-2022.3-mbe.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\mono\haxsdk_mono.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\backend\haxsdk_backend.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="haxsdk\third_party\detours\x64\detours.h">
@@ -119,6 +179,9 @@
     <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_opengl3_loader.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_vulkan.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
     <ClInclude Include="haxsdk\third_party\imgui\backend\imgui_impl_win32.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -143,23 +206,59 @@
     <ClInclude Include="haxsdk\third_party\stb_image.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="haxsdk\haxsdk.h">
+    <ClInclude Include="haxsdk\haxsdk_assertion.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="haxsdk\haxsdk_gui.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="haxsdk\haxsdk_logger.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\haxsdk_steam_api.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\haxsdk_system.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\haxsdk_tools.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
     <ClInclude Include="haxsdk\haxsdk_unity.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\fonts\Rubik_Regular.ttf.h">
+    <ClInclude Include="cheat\fonts\Hack_Compressed.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="cheat\fonts\Rubik_Compressed.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="cheat\cheat.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="cheat\game_classes.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="cheat\locales.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="haxsdk\haxsdk_properties.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="cheat\fonts\Icons.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Library Include="haxsdk\third_party\detours\x64\detours.lib" />
+    <Library Include="haxsdk\third_party\detours\x86\detours.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="haxsdk\third_party\detours\x64\detours.pdb" />
+    <None Include="haxsdk\third_party\detours\x86\detours.pdb" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>

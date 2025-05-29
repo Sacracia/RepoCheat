@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Включаемый файл, созданный в Microsoft Visual C++.
-// Используется RepoCheat.rc
+// Используется CppHaxSdkCheatTemplate.rc
 //
 #define IDB_PNG1                        101
 #define IDB_PNG2                        102

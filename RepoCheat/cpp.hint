@@ -1,8 +1,28 @@
 // Файлы указаний помогают среде IDE Visual Studio интерпретировать идентификаторы Visual C++
 // (например, имена функций и макросов).
 // Дополнительные сведения: https://go.microsoft.com/fwlink/?linkid=865984
-#define HAX_STATIC_FIELD(c, t, f, a, ns, cn, fn) static t* c ## __ ## f
-#define HAX_FIELD(c, t, f, a, ns, cn, fn) static int c ## __ ## f;
-#define HAX_METHOD(c, r, m, p, a, ns, cn, mn, s) static HaxMethod<r(__fastcall*)p> c ## __ ## m;
-#define FIELD(c, t, f) t& f() { return *(t*)((char*)this + c ## __ ## f); }
-#define STATIC_FIELD(c, t, f) static t& f() { return *c ## __ ## f; }
+#define BACKEND_API_DECL(_RET, _FUNC, _PARAMS) using t_##_FUNC = _RET (*)_PARAMS; static t_##_FUNC _FUNC = nullptr
+#define HAX_LOG(fmt, __VA_ARGS__) HaxSdk::Log(std::format(fmt,##__VA_ARGS__))
+#define HAX_ASSERT(expr, msg) HaxSdk::Assert(expr, msg)
+#define HAX_ASSERT(expr) _ASSERTE(expr)
+#define STATIC_FIELD(t, n) \
+static t& n() \
+{ \
+    return *(t*)s_ ## n ## .m_Address; \
+}
+
+#define FIELD(t, n) \
+t& n()\
+{\
+    CHECK_NULL();\
+    return *(t*)((char*)GetPointer() + s_ ## n ## .m_Offset);\
+}
+#define ENUM_VALUE(n)                                           \
+static int n()                                                  \
+{                                                               \
+    return s_ ## n ## .m_Value;                                 \
+}
+
+#define STEAM_API(ret, f, ...)\
+using t_ ## f = ret (*)(__VA_ARGS__);\
+static t_ ## f f
